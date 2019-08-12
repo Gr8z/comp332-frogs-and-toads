@@ -37,7 +37,7 @@ These animated images have been generated using the animation facilities in the 
 
 The purpose of this project is to construct and animate a solution to the frogs and toads puzzle for given numbers of frogs and toads. It is the case that this puzzle can always be solved for any starting numbers of frogs and toads.
 
-> **Note:** There is a subtle difference between writing an application to find a solution to a puzzle, if one exists, and constructing a mathematical proof that there must always exist a solution to that puzzle. These are certainly related activities but luckily for us, as programmers, the former is usually a little easier than the latter. We don't need to prove that the frogs and toads puzzle always has a solution, we just need to search for a solution to a specific instance of the puzzle.
+**Note:** There is a subtle difference between writing an application to find a solution to a puzzle, if one exists, and constructing a mathematical proof that there must always exist a solution to that puzzle. These are certainly related activities but luckily for us, as programmers, the former is usually a little easier than the latter. We don't need to prove that the frogs and toads puzzle always has a solution, we just need to search for a solution to a specific instance of the puzzle.
 
 Dom's solution to this problem works as follows:
 
@@ -62,9 +62,9 @@ which implements the following algorithm:
 
 * If the state `start` is actually the terminal state of the game then declare success and return.
 * Otherwise, **for each** move that is possible from state `start`, do the following:
-    * make that move to give a new state which we call `next`,
-    * make a recursive call `solve(next)` to try to find a solution to the problem starting from position `next`,
-    * if that call was successful then declare success and return,
+  * make that move to give a new state which we call `next`,
+  * make a recursive call `solve(next)` to try to find a solution to the problem starting from position `next`,
+  * if that call was successful then declare success and return,
 * If none of the possible moves tried resulted in success then declare failure and return.
 
 Strictly speaking, the algorithm just described simply reports whether it has successfully found a solution. As it stands we haven't described what should be done to return the sequence of `PuzzleState` objects describing the sequence of states passed through from `start` state to the terminal state. If you decide to implement this algorithm as your solution then you will need to work out exactly what sequences of `PuzzleState` objects to return at each possible return point.
@@ -87,7 +87,7 @@ This is certainly an issue with applying depth first searching in many problems,
 
 ### A more strategic solution (advanced) ###
 
-> **Warning:** This section is more advanced, and you don't need anything here to do this assignment. You should only think about things in this section if you've already solved the assignment and are looking for some extra challenges.
+**Warning:** This section is more advanced, and you don't need anything here to do this assignment. You should only think about things in this section if you've already solved the assignment and are looking for some extra challenges.
 
 We strongly encourage most people to implement a solution based upon the algorithm outlined above in their submission for assignment 1. But if you are really confident, or you would just like to think more about how you might **prove** that this puzzle always has a solution, then you might want to ponder the following points.
 
