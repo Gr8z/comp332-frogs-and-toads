@@ -41,13 +41,13 @@ The purpose of this project is to construct and animate a solution to the frogs 
 
 Dom's solution to this problem works as follows:
 
-A `PuzzleState` object describes the positions of the frogs and toads (and the empty cell) at a specific point in time. The `PuzzleState` object with all the frogs on the left and all the toads on the right is called the *initial state*. The `PuzzleState` object with all the toads on the left and all the frogs on the right is called the *terminal state*. 
+A `PuzzleState` object describes the positions of the frogs and toads (and the empty cell) at a specific point in time. The `PuzzleState` object with all the frogs on the left and all the toads on the right is called the *initial state*. The `PuzzleState` object with all the toads on the left and all the frogs on the right is called the *terminal state*.
 
 Define a recursive function with prototype
 
 ~~~scala
 /**
-  * Find a sequence of legal moves of the frogs and toads puzzle from a specified starting 
+  * Find a sequence of legal moves of the frogs and toads puzzle from a specified starting
   * [[PuzzleState]] to the terminal [[PuzzleState]].
   *
   * @param start the starting [[PuzzleState]]
@@ -99,7 +99,7 @@ Take a look at the animated images above and observe that they reveal a clear st
 
 Does this suggest a different strategy for constructing a solution to the frogs and toads problem to you? Can you implement that strategy in Scala?
 
-One advantage of the algorithm we discussed above is that it is relatively easy to see that if there *is* a solution to the puzzle then that algorithm will find it. Why is that the case? 
+One advantage of the algorithm we discussed above is that it is relatively easy to see that if there *is* a solution to the puzzle then that algorithm will find it. Why is that the case?
 
 Can you show that an algorithm based on the shuttling observations above will also construct a solution if there is one? Can you use it to show that a solution always exists?
 
@@ -107,22 +107,22 @@ Can you show that an algorithm based on the shuttling observations above will al
 
 This project contains three Scala modules:
 
-1. [Main.scala](src/main/scala/Main.scala) the driver module containing the `main()` entry point of the application. Also provides a utility function to take a sequence of animation frames, given as an object of type `Seq[doodle.image.Image]`, and to animate them in a window. This function has the following prototype:
+1. [FrogsAndToads.scala](src/main/scala/FrogsAndToads.scala) this is a skeleton module in which you should put your code to solve the frogs and toads game. It currently just contains stub code for an `AnimationState` class and a `solve()` function.
 
-   ~~~scala
-   /**
-     * Animate a list of images in a shrink-to-fit window.
-     *
-     * @param title the text to display in the title bar of the window.
-     * @param frames the list of `Image` objects to be displayed as the
-     * sequence of frames in the animation.
-     */
-   def runAnimation(title: String, frames: Seq[Image])
-   ~~~
+2. [FrogsAndToadsTests.scala](src/test/scala/FrogsAndToadsTests.scala) this is a skeleton module in which you should put your automated tests of the functions you've provided in the [FrogsAndToads.scala](src/main/scala/FrogsAndToads.scala) module.
 
-2. [FrogsAndToads.scala](src/main/scala/FrogsAndToads.scala) this is a skeleton module in which you should put your code to solve the frogs and toads game. It currently just contains stub code for an `AnimationState` class and a `solve()` function.
+3. [Main.scala](src/main/scala/Main.scala) the driver module containing the `main()` entry point of the application. Also provides a utility function to take a sequence of animation frames, given as an object of type `Seq[doodle.image.Image]`, and to animate them in a window. This function has the following prototype:
 
-3. [FrogsAndToadsTests.scala](src/test/scala/FrogsAndToadsTests.scala) this is a skeleton module in which you should put your automated tests of the functions you've provided in the [FrogsAndToads.scala](src/main/scala/FrogsAndToads.scala) module.
+~~~scala
+/**
+ * Animate a list of images in a shrink-to-fit window.
+ *
+ * @param title the text to display in the title bar of the window.
+ * @param frames the list of `Image` objects to be displayed as the
+ * sequence of frames in the animation.
+ */
+def runAnimation(title: String, frames: Seq[Image])
+~~~
 
 To compile and execute this code run the Scala [simple build tool (SBT)](https://www.scala-sbt.org/) from the root directory of this project and execute the `run` action to compile the project and run the `main()` method in the [Main.scala](src/main/scala/Main.scala) module.
 
