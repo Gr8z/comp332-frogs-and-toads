@@ -167,6 +167,10 @@ object PuzzleState {
   case object Toad extends Cell
   case object Empty extends Cell
 
+  val squareFrog = Image.square(100).fillColor(Color.green).strokeWidth(2)
+  val squareToad = Image.square(100).fillColor(Color.brown).strokeWidth(2)
+  val squareEmpty = Image.square(100).fillColor(Color.white)
+
   /**
     * Construct a [[PuzzleState]] object in the initial state for a
     * puzzle with specified numbers of frogs and toads.
@@ -204,27 +208,6 @@ object PuzzleState {
     Seq()
   }
 
-  val squareGreen =
-    Image
-      .square(100)
-      .fillColor(Color.green)
-      .strokeColor(Color.black)
-      .strokeWidth(4)
-
-  val squareBlue =
-    Image
-      .square(100)
-      .fillColor(Color.blue)
-      .strokeColor(Color.black)
-      .strokeWidth(4)
-
-  val squareWhite =
-    Image
-      .square(100)
-      .fillColor(Color.white)
-      .strokeColor(Color.black)
-      .strokeWidth(4)
-
   /**
     * Call [[solve]] to generate a sequence of legal moves from a specified
     * starting [[PuzzleState]] to the terminal [[PuzzleState]]. Render each state in that solution as
@@ -244,21 +227,21 @@ object PuzzleState {
   def builder(count: Int, board: PuzzleState): Image =
     count match {
 
-      case 0 => squareGreen
+      case 0 => squareFrog
       case n if board.getBoardState(n) == Toad =>
         val here =
-          squareBlue
+          squareToad
 
         builder(n - 1, board).beside(here)
 
       case n if board.getBoardState(n) == Frog =>
         val here =
-          squareGreen
+          squareFrog
         builder(n - 1, board).beside(here)
 
       case n if board.getBoardState(n) == Empty =>
         val here =
-          squareWhite
+          squareEmpty
         builder(n - 1, board).beside(here)
     }
 
