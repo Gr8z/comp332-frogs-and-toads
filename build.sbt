@@ -8,18 +8,18 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-ThisBuild/organization := "comp.mq.edu.au"
-ThisBuild/scalaVersion := "2.12.8"
-ThisBuild/scalacOptions :=
-    Seq(
-        "-deprecation",
-        "-feature",
-        "-unchecked",
-        "-Xcheckinit",
+ThisBuild / organization := "comp.mq.edu.au"
+ThisBuild / scalaVersion := "2.12.8"
+ThisBuild / scalacOptions :=
+  Seq(
+    "-deprecation",
+    "-feature",
+    "-unchecked",
+    "-Xcheckinit"
 //        "-Xfatal-warnings",
 //        "-Xlint:-stars-align,_"
-    )
-ThisBuild/resolvers += Resolver.bintrayRepo("underscoreio", "training")
+  )
+ThisBuild / resolvers += Resolver.bintrayRepo("underscoreio", "training")
 
 // Settings for the assignment 1 project.
 lazy val assignment1 = (project in file("."))
@@ -27,17 +27,14 @@ lazy val assignment1 = (project in file("."))
     // Project information
     name := "Comp332 Assignment1",
     version := "0.1",
-
     // Fork the JVM to run the doodle application. Then when the application
     // exits it won't kill the JVM that is running SBT.
     fork in run := true,
-
     // include API mappings
     autoAPIMappings := true,
-
     // Dependencies
     libraryDependencies ++=
-      Seq (
+      Seq(
         "junit" % "junit" % "4.12" % "test",
         "org.scalatest" %% "scalatest" % "3.0.8" % "test",
         "org.creativescala" %% "doodle" % "0.9.4"
@@ -48,10 +45,7 @@ lazy val assignment1 = (project in file("."))
 
 logLevel := Level.Info
 
-shellPrompt := {
-    state =>
-        Project.extract(state).currentRef.project + " " + version.value +
-            " " + scalaVersion.value + "> "
+shellPrompt := { state =>
+  Project.extract(state).currentRef.project + " " + version.value +
+    " " + scalaVersion.value + "> "
 }
-
-
