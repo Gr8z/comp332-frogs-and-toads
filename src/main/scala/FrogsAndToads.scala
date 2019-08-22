@@ -207,6 +207,14 @@ object PuzzleState {
     }
   }
 
+  /**
+    * [[builder]] is used to generate an image based on the vector of images from
+    * the [[PuzzleState]] which is then put in the Sequence to animate
+    *
+    * @param count size of [[PuzzleState]]
+    * @param board the current [[PuzzleState]]
+    * @return [[Image]] object that represent the current [[PuzzleState]]
+    */
   def builder(count: Int, board: PuzzleState): Image =
     count match {
       case 0 => squareFrog
@@ -230,7 +238,6 @@ object PuzzleState {
     * @param frogs the number of frogs in the puzzle (between 1 and 10 inclusive)
     * @param toads the number of toads in the puzzle (between 1 and 10 inclusive)
     */
-  def animate(frogs: Int, toads: Int): Seq[Image] = {
+  def animate(frogs: Int, toads: Int): Seq[Image] =
     animate(PuzzleState(frogs, toads))
-  }
 }
