@@ -18,9 +18,10 @@ object Main {
   import doodle.core._
   import doodle.image._
   import doodle.java2d._
-  import monix.reactive._
+  import monix.reactive.Observable
   import doodle.java2d.effect._
   import doodle.interact.syntax._
+  import doodle.effect.Writer.Gif
 
   /**
     * Animate a list of images in a shrink-to-fit window.
@@ -35,7 +36,7 @@ object Main {
         .fromIterable(
           frames.flatMap(Seq.fill(20)(_))
         )
-        .map(Image.compile[Algebra,Drawing])
+        .map(Image.compile)
 
     val window: Frame =
       Frame.fitToPicture().background(Color.white).title(title)
@@ -46,10 +47,10 @@ object Main {
   /**
     * Main entry point of the application.
     *
-    * @param args the array of options and parameters passed on 
+    * @param args the array of options and parameters passed on
     * the command line.
     */
   def main(args: Array[String]) {
-    runAnimation("Frogs and Toads", PuzzleState.animate(5, 8))
+    runAnimation("Frogs and Toads", PuzzleState.animate(5, 5))
   }
 }
