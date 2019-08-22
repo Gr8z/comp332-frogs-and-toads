@@ -39,7 +39,6 @@ class PuzzleState private (
     board.slice(emptyLoc + 1, size).forall(_ == Toad)
   }
 
-  // FIXME you might want to add more methods here.
   def getBoard(): Vector[PuzzleState.Cell] = {
     board
   }
@@ -60,7 +59,6 @@ class PuzzleState private (
           .++(thisBoard.takeRight(size - loc - 2)),
         loc + 1
       )
-
     } else {
       return new PuzzleState(
         thisBoard,
@@ -71,6 +69,7 @@ class PuzzleState private (
 
   def slideFrog(): PuzzleState = {
     val thisBoard: Vector[PuzzleState.Cell] = getBoard()
+    println(thisBoard)
     val emptyIndex: Int = thisBoard.indexOf(Empty)
     if (thisBoard(emptyIndex - 1) == Frog) {
       return new PuzzleState(
@@ -81,7 +80,6 @@ class PuzzleState private (
           .++(thisBoard.takeRight(size - loc - 2)),
         loc + 1
       )
-
     } else {
       return new PuzzleState(
         thisBoard,
@@ -94,15 +92,6 @@ class PuzzleState private (
     val thisBoard: Vector[PuzzleState.Cell] = getBoard()
     val emptyIndex: Int = thisBoard.indexOf(Empty)
     if (thisBoard(emptyIndex + 1) == Frog && thisBoard(emptyIndex + 2) == Toad) {
-      println(
-        thisBoard
-          .take(loc - 2)
-          .++(Vector(Toad))
-          .++(Vector(Empty))
-          .++(Vector(Frog))
-          .++(thisBoard.takeRight(size - loc + 1))
-      )
-
       return new PuzzleState(
         thisBoard
           .take(loc - 2)
@@ -112,7 +101,6 @@ class PuzzleState private (
           .++(thisBoard.takeRight(size - loc - 1)),
         loc + 1
       )
-
     } else {
       return new PuzzleState(
         thisBoard,
@@ -125,15 +113,6 @@ class PuzzleState private (
     val thisBoard: Vector[PuzzleState.Cell] = getBoard()
     val emptyIndex: Int = thisBoard.indexOf(Empty)
     if (thisBoard(emptyIndex - 1) == Toad && thisBoard(emptyIndex - 2) == Frog) {
-      println(
-        thisBoard
-          .take(loc - 2)
-          .++(Vector(Toad))
-          .++(Vector(Empty))
-          .++(Vector(Frog))
-          .++(thisBoard.takeRight(size - loc + 1))
-      )
-
       return new PuzzleState(
         thisBoard
           .take(loc - 2)
@@ -143,7 +122,6 @@ class PuzzleState private (
           .++(thisBoard.takeRight(size - loc - 1)),
         loc + 1
       )
-
     } else {
       return new PuzzleState(
         thisBoard,
@@ -205,7 +183,10 @@ object PuzzleState {
     */
   def solve(start: PuzzleState): Seq[PuzzleState] = {
     // FIXME add your frogs and toads solver code here.
-    Seq()
+    val build1 = start.slideFrog()
+    val build2 = build1.jumpToad()
+
+    Seq(build1, build2)
   }
 
   /**
@@ -219,29 +200,26 @@ object PuzzleState {
     */
   def animate(start: PuzzleState): Seq[Image] = {
     // FIXME add your code here to generate the animation frame sequence.
-    solve(start)
-    val sq_anim = Seq(builder(start.size - 1, start))
-    sq_anim
+    val states = solve(start)
+
+    states.map { state =>
+      builder(state.size - 1, state)
+    }
   }
 
   def builder(count: Int, board: PuzzleState): Image =
     count match {
-
       case 0 => squareFrog
       case n if board.getBoardState(n) == Toad =>
-        val here =
-          squareToad
-
+        val here = squareToad
         builder(n - 1, board).beside(here)
 
       case n if board.getBoardState(n) == Frog =>
-        val here =
-          squareFrog
+        val here = squareFrog
         builder(n - 1, board).beside(here)
 
       case n if board.getBoardState(n) == Empty =>
-        val here =
-          squareEmpty
+        val here = squareEmpty
         builder(n - 1, board).beside(here)
     }
 
@@ -253,7 +231,6 @@ object PuzzleState {
     * @param toads the number of toads in the puzzle (between 1 and 10 inclusive)
     */
   def animate(frogs: Int, toads: Int): Seq[Image] = {
-    var pond = PuzzleState(frogs, toads)
-    animate(pond)
+    animate(PuzzleState(frogs, toads))
   }
 }
