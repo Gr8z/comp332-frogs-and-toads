@@ -1,55 +1,62 @@
-/*
- * This file is part of COMP332 Assignment 1.
- *
- * Copyright (C) 2019 Dominic Verity, Macquarie University.
- *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- */
-
 package org.mq.frogsandtoads
 
-/**
-  * The top level object of the Frogs and Toads application.
-  */
 object Main {
-  import cats.instances.all._
-  import doodle.core._
-  import doodle.image._
-  import doodle.java2d._
-  import monix.reactive._
-  import doodle.java2d.effect._
-  import doodle.interact.syntax._
-
-  /**
-    * Animate a list of images in a shrink-to-fit window.
-    *
-    * @param title the text to display in the title bar of the window.
-    * @param frames the list of `Image` objects to be displayed as the
-    * sequence of frames in the animation.
-    */
-  def runAnimation(title: String, frames: Seq[Image]) {
-    val animation: Observable[Picture[Unit]] =
-      Observable
-        .fromIterable(
-          frames.flatMap(Seq.fill(20)(_))
-        )
-        .map(Image.compile[Algebra, Drawing])
-
-    val window: Frame =
-      Frame.fitToPicture().background(Color.white).title(title)
-
-    animation.animateFrames(window)
+  def legalMoves(board: List[Int]): List[List[Int]] = {
+    var moves = List[List[Int]]()
+    for ((piece, pos) <- board.zipWithIndex) {
+      val jumpmove = pos + (piece * 2)
+      val move = pos + (piece)
+      if (piece != 0) {
+        if (!((jumpmove < 0) || (jumpmove >= board.size))) {
+          if (board(jumpmove) == 0) {
+            var t = board
+            t = t.patch(pos, List(0), 1)
+            t = t.patch(jumpmove, List(piece), 1)
+            moves = moves :+ t
+          }
+        }
+        if (!((move < 0) || (move >= board.size))) {
+          if (board(move) == 0) {
+            var t = board
+            t = t.patch(pos, List(0), 1)
+            t = t.patch(move, List(piece), 1)
+            moves = moves :+ t
+          }
+        }
+      }
+    }
+    return moves
   }
 
-  /**
-    * Main entry point of the application.
-    *
-    * @param args the array of options and parameters passed on
-    * the command line.
-    */
+  def evalAll(
+      current: List[List[List[Int]]],
+      target: List[Int]
+  ): List[List[List[Int]]] = {
+    var next = List[List[List[Int]]]()
+    for (a <- current) {
+      val n = legalMoves(a.last)
+      for (q <- n) {
+        var t = a
+        t = t :+ q
+        if (q == target) {
+          return List(t)
+        }
+        next = next :+ t
+      }
+    }
+    return next
+  }
+
+  def solve(start: List[Int]): List[List[List[Int]]] = {
+    var temp = List(List(start))
+    val end = start.reverse
+    while (temp.last.last != end) {
+      temp = evalAll(temp, end)
+    }
+    return temp
+  }
+
   def main(args: Array[String]) {
-    runAnimation("Frogs and Toads", PuzzleState.animate(3, 3))
+    println(solve(List(1, 1, 1, 0, -1, -1, -1)))
   }
 }
