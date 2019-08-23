@@ -148,7 +148,7 @@ object PuzzleState {
   val squareFrog = Image.square(100).fillColor(Color.green).strokeWidth(2)
   val squareToad = Image.square(100).fillColor(Color.brown).strokeWidth(2)
   val squareEmpty = Image.square(100).fillColor(Color.white)
-  val states = Seq()
+  var states = Seq[PuzzleState]()
 
   /**
     * Construct a [[PuzzleState]] object in the initial state for a
@@ -200,7 +200,7 @@ object PuzzleState {
     moves.foreach(move => {
       if (move != None) {
         val next = move.getOrElse(start)
-        states :+ next
+        states = states :+ next
         solve(next)
       }
     })
