@@ -18,10 +18,9 @@ object Main {
   import doodle.core._
   import doodle.image._
   import doodle.java2d._
-  import monix.reactive.Observable
+  import monix.reactive._
   import doodle.java2d.effect._
   import doodle.interact.syntax._
-  import doodle.effect.Writer.Gif
 
   /**
     * Animate a list of images in a shrink-to-fit window.
@@ -36,7 +35,7 @@ object Main {
         .fromIterable(
           frames.flatMap(Seq.fill(20)(_))
         )
-        .map(Image.compile)
+        .map(Image.compile[Algebra, Drawing])
 
     val window: Frame =
       Frame.fitToPicture().background(Color.white).title(title)
