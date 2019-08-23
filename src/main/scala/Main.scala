@@ -51,6 +51,6 @@ object Main {
     * the command line.
     */
   def main(args: Array[String]) {
-    runAnimation("Frogs and Toads", PuzzleState.animate(5, 5))
+    runAnimation("Frogs and Toads", PuzzleState.animate(3, 3))
   }
 }
