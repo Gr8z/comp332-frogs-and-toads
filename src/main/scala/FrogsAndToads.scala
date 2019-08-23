@@ -44,92 +44,89 @@ class PuzzleState private (
     board
   }
 
+  def checkState(index: Int, item: PuzzleState.Cell): Boolean = {
+    if (index < 0 || index >= size) {
+      false
+    } else {
+      board(index) == item
+    }
+  }
+
   def getBoardState(fort: Int): PuzzleState.Cell = {
     board(fort)
   }
 
-  def slideToad(): PuzzleState = {
+  def slideToad(): Option[PuzzleState] = {
     val emptyIndex: Int = board.indexOf(Empty)
-    if (board(emptyIndex + 1) == Toad) {
-      new PuzzleState(
-        board
-          .take(loc)
-          .++(Vector(Toad))
-          .++(Vector(Empty))
-          .++(board.takeRight(size - loc - 2)),
-        loc + 1
+    if (checkState(emptyIndex + 1, Toad)) {
+      Some(
+        new PuzzleState(
+          board
+            .take(loc)
+            .++(Vector(Toad))
+            .++(Vector(Empty))
+            .++(board.takeRight(size - loc - 2)),
+          loc + 1
+        )
       )
     } else {
-      new PuzzleState(
-        board,
-        loc
-      )
+      None
     }
   }
 
-  def slideFrog(): PuzzleState = {
+  def slideFrog(): Option[PuzzleState] = {
     val emptyIndex: Int = board.indexOf(Empty)
-    if (board(emptyIndex - 1) == Frog) {
-      println(
-        board
-          .take(loc - 1)
-          .++(Vector(Empty))
-          .++(Vector(Frog))
-          .++(board.takeRight(size - loc - 1))
-      )
-      new PuzzleState(
-        board
-          .take(loc - 1)
-          .++(Vector(Empty))
-          .++(Vector(Frog))
-          .++(board.takeRight(size - loc - 1)),
-        loc - 1
+    if (checkState(emptyIndex - 1, Frog)) {
+      Some(
+        new PuzzleState(
+          board
+            .take(loc - 1)
+            .++(Vector(Empty))
+            .++(Vector(Frog))
+            .++(board.takeRight(size - loc - 1)),
+          loc - 1
+        )
       )
     } else {
-      new PuzzleState(
-        board,
-        loc
-      )
+      None
     }
   }
 
-  def jumpToad(): PuzzleState = {
+  def jumpToad(): Option[PuzzleState] = {
     val emptyIndex: Int = board.indexOf(Empty)
-    if (board(emptyIndex + 1) == Frog && board(emptyIndex + 2) == Toad) {
-      new PuzzleState(
-        board
-          .take(loc - 2)
-          .++(Vector(Toad))
-          .++(Vector(Empty))
-          .++(Vector(Frog))
-          .++(board.takeRight(size - loc - 1)),
-        loc + 1
+    if (checkState(emptyIndex + 1, Frog) && checkState(emptyIndex + 2, Toad)) {
+      Some(
+        new PuzzleState(
+          board
+            .take(loc)
+            .++(Vector(Toad))
+            .++(Vector(Frog))
+            .++(Vector(Empty))
+            .++(board.takeRight(size - loc - 3)),
+          loc + 2
+        )
       )
     } else {
-      new PuzzleState(
-        board,
-        loc
-      )
+      None
     }
   }
 
-  def jumpFrog(): PuzzleState = {
+  def jumpFrog(): Option[PuzzleState] = {
     val emptyIndex: Int = board.indexOf(Empty)
-    if (board(emptyIndex - 1) == Toad && board(emptyIndex - 2) == Frog) {
-      new PuzzleState(
-        board
-          .take(loc - 2)
-          .++(Vector(Toad))
-          .++(Vector(Empty))
-          .++(Vector(Frog))
-          .++(board.takeRight(size - loc - 1)),
-        loc + 1
+    if (checkState(emptyIndex - 1, Toad) && checkState(emptyIndex - 2, Frog)) {
+      Some(
+        new PuzzleState(
+          board
+            .take(loc - 2)
+            .++(Vector(Empty))
+            .++(Vector(Toad))
+            .++(Vector(Frog))
+            .++(board.takeRight(size - loc - 1)),
+          loc - 2
+        )
       )
     } else {
-      new PuzzleState(
-        board,
-        loc
-      )
+      None
     }
   }
 }
@@ -185,30 +182,31 @@ object PuzzleState {
     * state `start` to the terminal state (inclusive). Returns the empty sequence if no solution
     * is found.
     */
-  // def solve(start: PuzzleState): Seq[PuzzleState] = {
-  //   // FIXME add your frogs and toads solver code here.
-  //   println(start.getBoard())
-  //   if (start.isTerminalState()) {
-  //     return states
-  //   }
+  def solve(start: PuzzleState): Seq[PuzzleState] = {
+    // FIXME add your frogs and toads solver code here.
+    //println(start.getBoard())
 
-  //   val moves = Seq(
-  //     start.slideFrog(),
-  //     start.slideToad(),
-  //     start.jumpFrog(),
-  //     start.jumpToad()
-  //   )
+    if (start.isTerminalState()) {
+      return states
+    }
 
-  //   moves.foreach(move => {
-  //     if (move != None) {
-  //       val next = move.getOrElse(start)
-  //       states :+ next
-  //       solve(next)
-  //     }
-  //   })
+    val moves = Seq(
+      start.jumpToad(),
+      start.slideFrog(),
+      start.jumpFrog(),
+      start.slideToad()
+    )
 
-  //   return states
-  // }
+    moves.foreach(move => {
+      if (move != None) {
+        val next = move.getOrElse(start)
+        states :+ next
+        solve(next)
+      }
+    })
+
+    return states
+  }
 
   /**
     * Call [[solve]] to generate a sequence of legal moves from a specified
@@ -220,13 +218,12 @@ object PuzzleState {
     * passed through in the transit from the `start` state to the terminal state.
     */
   def animate(start: PuzzleState): Seq[Image] = {
-    // FIXME add your code here to generate the animation frame sequence.
-    // val states = solve(start)
+    //FIXME add your code here to generate the animation frame sequence.
+    val states = solve(start)
 
-    // states.map { state =>
-    //   builder(state.size - 1, state)
-    // }
-    Seq(builder(start.size - 1, start))
+    states.map { state =>
+      builder(state.size - 1, state)
+    }
   }
 
   /**
@@ -235,7 +232,7 @@ object PuzzleState {
     *
     * @param count size of [[PuzzleState]]
     * @param board the current [[PuzzleState]]
-    * @return [[Image]] object that represent the current [[PuzzleState]]
+    * @return the [[Image]] object that represent the current [[PuzzleState]]
     */
   def builder(count: Int, state: PuzzleState): Image = {
     if (count < 0) {
@@ -259,5 +256,20 @@ object PuzzleState {
   def animate(frogs: Int, toads: Int): Seq[Image] =
     animate(
       PuzzleState(frogs, toads)
+      // .slideFrog()
+      // .jumpToad()
+      // .slideToad()
+      // .jumpFrog()
+      // .jumpFrog()
+      // .slideFrog()
+      // .jumpToad()
+      // .jumpToad()
+      // .jumpToad()
+      // .slideFrog()
+      // .jumpFrog()
+      // .jumpFrog()
+      // .slideToad()
+      // .jumpToad()
+      // .slideFrog()
     )
 }
