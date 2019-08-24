@@ -191,8 +191,7 @@ object PuzzleState {
     * is found.
     */
   def solve(start: Seq[PuzzleState], pref: Boolean = true): Seq[PuzzleState] = {
-    println(start.last.getBoard())
-
+    //println(start.last.getBoard())
     if (start.last.isTerminalState()) {
       println("Found solution")
       return start
@@ -201,16 +200,16 @@ object PuzzleState {
     if (pref) {
       val moveFrogs = start.last.moveFrog()
       if (moveFrogs != None) {
-        solve(start :+ moveFrogs.getOrElse(start.last))
+        return solve(start :+ moveFrogs.getOrElse(start.last))
       }
     }
 
     val moveToads = start.last.moveToad()
     if (moveToads != None) {
-      solve(start :+ moveToads.getOrElse(start.last), false)
+      return solve(start :+ moveToads.getOrElse(start.last), false)
     }
 
-    solve(start)
+    return solve(start)
   }
 
   /**
