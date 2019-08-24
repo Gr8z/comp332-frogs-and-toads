@@ -14,6 +14,7 @@ import doodle.core._
 import doodle.syntax._
 import doodle.image._
 import doodle.image.Image.Elements.Beside
+import scala.util.{Failure, Success, Try}
 
 /**
   * A puzzle state is given as a 1-dimensional array of cell values.
@@ -148,7 +149,6 @@ object PuzzleState {
   val squareFrog = Image.square(100).fillColor(Color.green).strokeWidth(2)
   val squareToad = Image.square(100).fillColor(Color.brown).strokeWidth(2)
   val squareEmpty = Image.square(100).fillColor(Color.white)
-  var states = Seq[PuzzleState]()
 
   /**
     * Construct a [[PuzzleState]] object in the initial state for a
@@ -182,30 +182,31 @@ object PuzzleState {
     * state `start` to the terminal state (inclusive). Returns the empty sequence if no solution
     * is found.
     */
-  def solve(start: PuzzleState): Seq[PuzzleState] = {
+  def solve(start: Seq[PuzzleState]): Seq[PuzzleState] = {
     // FIXME add your frogs and toads solver code here.
-    //println(start.getBoard())
+    println(start.last.getBoard())
 
-    if (start.isTerminalState()) {
-      return states
+    if (start.last.isTerminalState()) {
+      println("Found solution")
+      return start
     }
 
     val moves = Seq(
-      start.jumpToad(),
-      start.slideFrog(),
-      start.jumpFrog(),
-      start.slideToad()
+      start.last.slideFrog(),
+      start.last.slideToad(),
+      start.last.jumpFrog(),
+      start.last.jumpToad()
     )
 
     moves.foreach(move => {
       if (move != None) {
-        val next = move.getOrElse(start)
-        states = states :+ next
-        solve(next)
+        val next = move.getOrElse(start.last)
+        solve(start :+ next)
       }
+      throw new Exception("No solution found");
     })
 
-    return states
+    return start
   }
 
   /**
@@ -219,7 +220,7 @@ object PuzzleState {
     */
   def animate(start: PuzzleState): Seq[Image] = {
     //FIXME add your code here to generate the animation frame sequence.
-    val states = solve(start)
+    val states = solve(Seq(start))
 
     states.map { state =>
       builder(state.size - 1, state)
