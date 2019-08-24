@@ -29,7 +29,7 @@ lazy val assignment1 = (project in file("."))
     version := "0.1",
     // Fork the JVM to run the doodle application. Then when the application
     // exits it won't kill the JVM that is running SBT.
-    fork in run := true,
+    //fork in run := true,
     // include API mappings
     autoAPIMappings := true,
     // Dependencies

@@ -41,6 +41,22 @@ class PuzzleState private (
     board.slice(emptyLoc + 1, size).forall(_ == Toad)
   }
 
+  def isToadsTurn(): Boolean = {
+    (checkState(emptyLoc - 1, Frog) ||
+    emptyLoc < 0) &&
+    checkState(emptyLoc, Empty) &&
+    checkState(emptyLoc + 1, Frog) &&
+    checkState(emptyLoc + 2, Toad)
+  }
+
+  def isFrogsTurn(): Boolean = {
+    checkState(emptyLoc - 2, Frog) &&
+    checkState(emptyLoc - 1, Toad) &&
+    checkState(emptyLoc, Empty) &&
+    (checkState(emptyLoc + 1, Toad) ||
+    emptyLoc >= size)
+  }
+
   def getBoard(): Vector[PuzzleState.Cell] = {
     board
   }
@@ -53,47 +69,16 @@ class PuzzleState private (
     }
   }
 
-  def safeMove(): Boolean = {
-    println(board)
-    if (checkState(loc - 1, Toad) &&
-        checkState(loc - 2, Toad) &&
-        checkState(loc - 3, Frog)) {
-      println("stuck FTTE")
-      return false
-    }
-    if (checkState(loc + 1, Frog) &&
-        checkState(loc + 2, Frog) &&
-        checkState(loc + 3, Toad)) {
-      println("stuck EFFT")
-      return false
-    }
-    return true
-  }
-
   def getBoardState(fort: Int): PuzzleState.Cell = {
     board(fort)
   }
 
   def moveToad(): Option[PuzzleState] = {
-    val emptyIndex: Int = board.indexOf(Empty)
-    if (checkState(emptyIndex + 1, Toad)) {
-      val newState = new PuzzleState(
-        board
-          .take(loc)
-          .++(Vector(Toad))
-          .++(Vector(Empty))
-          .++(board.takeRight(size - loc - 2)),
-        loc + 1
-      )
-      if (newState.safeMove()) {
-        Some(newState)
-      } else {
-        None
-      }
-    } else if (checkState(emptyIndex + 1, Frog) && checkState(
-                 emptyIndex + 2,
-                 Toad
-               )) {
+    if (isFrogsTurn()) {
+      //println("Its FROGs turn now")
+      return None
+    }
+    if (checkState(loc + 1, Frog) && checkState(loc + 2, Toad)) {
       val newState = new PuzzleState(
         board
           .take(loc)
@@ -103,36 +88,30 @@ class PuzzleState private (
           .++(board.takeRight(size - loc - 3)),
         loc + 2
       )
-      if (newState.safeMove()) {
-        Some(newState)
-      } else {
-        None
-      }
+      //println("jumpToad")
+      Some(newState)
+    } else if (checkState(loc + 1, Toad)) {
+      val newState = new PuzzleState(
+        board
+          .take(loc)
+          .++(Vector(Toad))
+          .++(Vector(Empty))
+          .++(board.takeRight(size - loc - 2)),
+        loc + 1
+      )
+      //println("slideToad")
+      Some(newState)
     } else {
       None
     }
   }
 
   def moveFrog(): Option[PuzzleState] = {
-    val emptyIndex: Int = board.indexOf(Empty)
-    if (checkState(emptyIndex - 1, Frog)) {
-      val newState = new PuzzleState(
-        board
-          .take(loc - 1)
-          .++(Vector(Empty))
-          .++(Vector(Frog))
-          .++(board.takeRight(size - loc - 1)),
-        loc - 1
-      )
-      if (newState.safeMove()) {
-        Some(newState)
-      } else {
-        None
-      }
-    } else if (checkState(emptyIndex - 1, Toad) && checkState(
-                 emptyIndex - 2,
-                 Frog
-               )) {
+    if (isToadsTurn()) {
+      //println("Its TOADs turn now")
+      return None
+    }
+    if (checkState(loc - 1, Toad) && checkState(loc - 2, Frog)) {
       val newState = new PuzzleState(
         board
           .take(loc - 2)
@@ -142,11 +121,19 @@ class PuzzleState private (
           .++(board.takeRight(size - loc - 1)),
         loc - 2
       )
-      if (newState.safeMove()) {
-        Some(newState)
-      } else {
-        None
-      }
+      //println("jumpFrog")
+      Some(newState)
+    } else if (checkState(loc - 1, Frog)) {
+      val newState = new PuzzleState(
+        board
+          .take(loc - 1)
+          .++(Vector(Empty))
+          .++(Vector(Frog))
+          .++(board.takeRight(size - loc - 1)),
+        loc - 1
+      )
+      //println("slideFrog")
+      Some(newState)
     } else {
       None
     }
@@ -203,24 +190,27 @@ object PuzzleState {
     * state `start` to the terminal state (inclusive). Returns the empty sequence if no solution
     * is found.
     */
-  def solve(start: Seq[PuzzleState]): Seq[PuzzleState] = {
-    // FIXME add your frogs and toads solver code here.
-    //println(start.last.getBoard())
+  def solve(start: Seq[PuzzleState], pref: Boolean = true): Seq[PuzzleState] = {
+    println(start.last.getBoard())
 
     if (start.last.isTerminalState()) {
       println("Found solution")
       return start
     }
 
-    val moveFrog = start.last.moveFrog();
-    val moveToad = start.last.moveToad();
-    if (moveFrog != None) {
-      solve(start :+ moveFrog.getOrElse(start.last))
-    } else if (moveToad != None) {
-      solve(start :+ moveToad.getOrElse(start.last))
-    } else {
-      start
+    if (pref) {
+      val moveFrogs = start.last.moveFrog()
+      if (moveFrogs != None) {
+        solve(start :+ moveFrogs.getOrElse(start.last))
+      }
     }
+
+    val moveToads = start.last.moveToad()
+    if (moveToads != None) {
+      solve(start :+ moveToads.getOrElse(start.last), false)
+    }
+
+    solve(start)
   }
 
   /**
@@ -233,7 +223,6 @@ object PuzzleState {
     * passed through in the transit from the `start` state to the terminal state.
     */
   def animate(start: PuzzleState): Seq[Image] = {
-    //FIXME add your code here to generate the animation frame sequence.
     val states = solve(Seq(start))
 
     states.map { state =>
