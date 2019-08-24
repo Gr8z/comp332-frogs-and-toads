@@ -53,79 +53,100 @@ class PuzzleState private (
     }
   }
 
+  def safeMove(): Boolean = {
+    println(board)
+    if (checkState(loc - 1, Toad) &&
+        checkState(loc - 2, Toad) &&
+        checkState(loc - 3, Frog)) {
+      println("stuck FTTE")
+      return false
+    }
+    if (checkState(loc + 1, Frog) &&
+        checkState(loc + 2, Frog) &&
+        checkState(loc + 3, Toad)) {
+      println("stuck EFFT")
+      return false
+    }
+    return true
+  }
+
   def getBoardState(fort: Int): PuzzleState.Cell = {
     board(fort)
   }
 
-  def slideToad(): Option[PuzzleState] = {
+  def moveToad(): Option[PuzzleState] = {
     val emptyIndex: Int = board.indexOf(Empty)
     if (checkState(emptyIndex + 1, Toad)) {
-      Some(
-        new PuzzleState(
-          board
-            .take(loc)
-            .++(Vector(Toad))
-            .++(Vector(Empty))
-            .++(board.takeRight(size - loc - 2)),
-          loc + 1
-        )
+      val newState = new PuzzleState(
+        board
+          .take(loc)
+          .++(Vector(Toad))
+          .++(Vector(Empty))
+          .++(board.takeRight(size - loc - 2)),
+        loc + 1
       )
+      if (newState.safeMove()) {
+        Some(newState)
+      } else {
+        None
+      }
+    } else if (checkState(emptyIndex + 1, Frog) && checkState(
+                 emptyIndex + 2,
+                 Toad
+               )) {
+      val newState = new PuzzleState(
+        board
+          .take(loc)
+          .++(Vector(Toad))
+          .++(Vector(Frog))
+          .++(Vector(Empty))
+          .++(board.takeRight(size - loc - 3)),
+        loc + 2
+      )
+      if (newState.safeMove()) {
+        Some(newState)
+      } else {
+        None
+      }
     } else {
       None
     }
   }
 
-  def slideFrog(): Option[PuzzleState] = {
+  def moveFrog(): Option[PuzzleState] = {
     val emptyIndex: Int = board.indexOf(Empty)
     if (checkState(emptyIndex - 1, Frog)) {
-      Some(
-        new PuzzleState(
-          board
-            .take(loc - 1)
-            .++(Vector(Empty))
-            .++(Vector(Frog))
-            .++(board.takeRight(size - loc - 1)),
-          loc - 1
-        )
+      val newState = new PuzzleState(
+        board
+          .take(loc - 1)
+          .++(Vector(Empty))
+          .++(Vector(Frog))
+          .++(board.takeRight(size - loc - 1)),
+        loc - 1
       )
-    } else {
-      None
-    }
-  }
-
-  def jumpToad(): Option[PuzzleState] = {
-    val emptyIndex: Int = board.indexOf(Empty)
-    if (checkState(emptyIndex + 1, Frog) && checkState(emptyIndex + 2, Toad)) {
-      Some(
-        new PuzzleState(
-          board
-            .take(loc)
-            .++(Vector(Toad))
-            .++(Vector(Frog))
-            .++(Vector(Empty))
-            .++(board.takeRight(size - loc - 3)),
-          loc + 2
-        )
+      if (newState.safeMove()) {
+        Some(newState)
+      } else {
+        None
+      }
+    } else if (checkState(emptyIndex - 1, Toad) && checkState(
+                 emptyIndex - 2,
+                 Frog
+               )) {
+      val newState = new PuzzleState(
+        board
+          .take(loc - 2)
+          .++(Vector(Empty))
+          .++(Vector(Toad))
+          .++(Vector(Frog))
+          .++(board.takeRight(size - loc - 1)),
+        loc - 2
       )
-    } else {
-      None
-    }
-  }
-
-  def jumpFrog(): Option[PuzzleState] = {
-    val emptyIndex: Int = board.indexOf(Empty)
-    if (checkState(emptyIndex - 1, Toad) && checkState(emptyIndex - 2, Frog)) {
-      Some(
-        new PuzzleState(
-          board
-            .take(loc - 2)
-            .++(Vector(Empty))
-            .++(Vector(Toad))
-            .++(Vector(Frog))
-            .++(board.takeRight(size - loc - 1)),
-          loc - 2
-        )
-      )
+      if (newState.safeMove()) {
+        Some(newState)
+      } else {
+        None
+      }
     } else {
       None
     }
@@ -184,29 +205,22 @@ object PuzzleState {
     */
   def solve(start: Seq[PuzzleState]): Seq[PuzzleState] = {
     // FIXME add your frogs and toads solver code here.
-    println(start.last.getBoard())
+    //println(start.last.getBoard())
 
     if (start.last.isTerminalState()) {
       println("Found solution")
       return start
     }
 
-    val moves = Seq(
-      start.last.slideFrog(),
-      start.last.slideToad(),
-      start.last.jumpFrog(),
-      start.last.jumpToad()
-    )
-
-    moves.foreach(move => {
-      if (move != None) {
-        val next = move.getOrElse(start.last)
-        solve(start :+ next)
-      }
-      throw new Exception("No solution found");
-    })
-
-    return start
+    val moveFrog = start.last.moveFrog();
+    val moveToad = start.last.moveToad();
+    if (moveFrog != None) {
+      solve(start :+ moveFrog.getOrElse(start.last))
+    } else if (moveToad != None) {
+      solve(start :+ moveToad.getOrElse(start.last))
+    } else {
+      start
+    }
   }
 
   /**
