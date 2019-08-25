@@ -14,7 +14,6 @@ import doodle.core._
 import doodle.syntax._
 import doodle.image._
 import doodle.image.Image.Elements.Beside
-import scala.util.{Failure, Success, Try}
 
 /**
   * A puzzle state is given as a 1-dimensional array of cell values.
@@ -75,7 +74,6 @@ class PuzzleState private (
 
   def moveToad(): Option[PuzzleState] = {
     if (isFrogsTurn()) {
-      //println("Its FROGs turn now")
       return None
     }
     if (checkState(loc + 1, Frog) && checkState(loc + 2, Toad)) {
@@ -88,7 +86,6 @@ class PuzzleState private (
           .++(board.takeRight(size - loc - 3)),
         loc + 2
       )
-      //println("jumpToad")
       Some(newState)
     } else if (checkState(loc + 1, Toad)) {
       val newState = new PuzzleState(
@@ -99,7 +96,6 @@ class PuzzleState private (
           .++(board.takeRight(size - loc - 2)),
         loc + 1
       )
-      //println("slideToad")
       Some(newState)
     } else {
       None
@@ -108,7 +104,6 @@ class PuzzleState private (
 
   def moveFrog(): Option[PuzzleState] = {
     if (isToadsTurn()) {
-      //println("Its TOADs turn now")
       return None
     }
     if (checkState(loc - 1, Toad) && checkState(loc - 2, Frog)) {
@@ -121,7 +116,6 @@ class PuzzleState private (
           .++(board.takeRight(size - loc - 1)),
         loc - 2
       )
-      //println("jumpFrog")
       Some(newState)
     } else if (checkState(loc - 1, Frog)) {
       val newState = new PuzzleState(
@@ -191,7 +185,6 @@ object PuzzleState {
     * is found.
     */
   def solve(start: Seq[PuzzleState], pref: Boolean = true): Seq[PuzzleState] = {
-    //println(start.last.getBoard())
     if (start.last.isTerminalState()) {
       println("Found solution")
       return start
@@ -257,22 +250,5 @@ object PuzzleState {
     * @param toads the number of toads in the puzzle (between 1 and 10 inclusive)
     */
   def animate(frogs: Int, toads: Int): Seq[Image] =
-    animate(
-      PuzzleState(frogs, toads)
-      // .slideFrog()
-      // .jumpToad()
-      // .slideToad()
-      // .jumpFrog()
-      // .jumpFrog()
-      // .slideFrog()
-      // .jumpToad()
-      // .jumpToad()
-      // .jumpToad()
-      // .slideFrog()
-      // .jumpFrog()
-      // .jumpFrog()
-      // .slideToad()
-      // .jumpToad()
-      // .slideFrog()
-    )
+    animate(PuzzleState(frogs, toads))
 }

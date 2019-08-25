@@ -38,7 +38,7 @@ object Main {
         .map(Image.compile[Algebra, Drawing])
 
     val window: Frame =
-      Frame.fitToPicture().background(Color.white).title(title)
+      Frame.fitToPicture().background(Color.black).title(title)
 
     animation.animateFrames(window)
   }
@@ -50,6 +50,6 @@ object Main {
     * the command line.
     */
   def main(args: Array[String]) {
-    runAnimation("Frogs and Toads", PuzzleState.animate(6, 6))
+    runAnimation("Frogs and Toads", PuzzleState.animate(3, 3))
   }
 }
