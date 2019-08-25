@@ -177,14 +177,14 @@ object PuzzleState {
   }
 
   /**
-    * Find a sequence of legal moves of the frogs and toads puzzle from a specified starting
-    * [[PuzzleState]] to the terminal [[PuzzleState]].
+    * Find a sequence of legal moves of the frogs and toads puzzle from a
+    * specified starting [[PuzzleState]] to the terminal [[PuzzleState]].
     *
     * @param start the sequence of [[PuzzleState]] with the states leading to the solution
     * @param pref Defaults to true, if false, gives prefference to the toads.
-    * @return the sequence of [[PuzzleState]] objects passed through in the transit from
-    * state `start` to the terminal state (inclusive). Returns the empty sequence if no solution
-    * is found.
+    * @return the sequence of [[PuzzleState]] objects passed through in the
+    * transit from state `start` to the terminal state (inclusive).
+    * Returns the empty sequence if no solution is found.
     */
   def solve(start: Seq[PuzzleState], pref: Boolean = true): Seq[PuzzleState] = {
     if (start.last.isTerminalState()) {
@@ -209,8 +209,8 @@ object PuzzleState {
 
   /**
     * Call [[solve]] to generate a sequence of legal moves from a specified
-    * starting [[PuzzleState]] to the terminal [[PuzzleState]]. Render each state in that solution as
-    * an image and return the resulting sequence of images.
+    * starting [[PuzzleState]] to the terminal [[PuzzleState]]. Render each
+    * state in that solution as an image and return the resulting sequence of images.
     *
     * @param start the starting [[PuzzleState]]
     * @return the sequence of [[Image]] objects depicting the sequence of puzzle states
@@ -245,8 +245,9 @@ object PuzzleState {
   }
 
   /**
-    * Create an animation of a solution to the frogs and toads puzzle, starting from the initial
-    * [[PuzzleState]] and ending at the terminal [[PuzzleState]].
+    * Create an animation of a solution to the frogs and toads puzzle,
+    * starting from the initial [[PuzzleState]] and ending at the
+    * terminal [[PuzzleState]].
     *
     * @param frogs the number of frogs in the puzzle (between 1 and 10 inclusive)
     * @param toads the number of toads in the puzzle (between 1 and 10 inclusive)

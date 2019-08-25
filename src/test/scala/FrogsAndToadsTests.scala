@@ -26,7 +26,7 @@ class FrogsAndToadsTests extends FlatSpec with Matchers {
 
   // Tests of an empty B-tree
 
-  "An puzzle state with 5 frogs and 8 toads:" should
+  "A puzzle state with 5 frogs and 8 toads:" should
     "have 5 + 8 + 1 = 14 cells" in {
     assert(PuzzleState(5, 8).size == 14)
   }
@@ -45,5 +45,28 @@ class FrogsAndToadsTests extends FlatSpec with Matchers {
     assert(!PuzzleState(5, 8).isTerminalState())
   }
 
-  // FIXME Add more tests here.
+  "A puzzle state:" should "produce Exception when invoked with 11 frogs" in {
+    intercept[Exception] {
+      PuzzleState(11, 8)
+    }
+  }
+
+  it should "produce Exception when invoked with 11 toads" in {
+    intercept[Exception] {
+      PuzzleState(8, 11)
+    }
+  }
+
+  it should "produce Exception when invoked with 0 frogs" in {
+    intercept[Exception] {
+      PuzzleState(0, 8)
+    }
+  }
+
+  it should "produce Exception when invoked with 0 toads" in {
+    intercept[Exception] {
+      PuzzleState(8, 0)
+    }
+  }
+
 }
