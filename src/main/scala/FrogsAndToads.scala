@@ -18,10 +18,7 @@ import doodle.image.Image.Elements.Beside
 /**
   * A puzzle state is given as a 1-dimensional array of cell values.
   */
-class PuzzleState private (
-    board: Vector[PuzzleState.Cell],
-    loc: Int
-) {
+class PuzzleState private (board: Vector[PuzzleState.Cell], loc: Int) {
 
   import PuzzleState._
 
@@ -148,6 +145,10 @@ object PuzzleState {
   case object Toad extends Cell
   case object Empty extends Cell
 
+  /**
+    * Doodle elements for the Puzzle states, each is mapped with a
+    * cell in the puzzle.
+    */
   val squareFrog = Image.square(100).fillColor(Color.green).strokeWidth(2)
   val squareToad = Image.square(100).fillColor(Color.brown).strokeWidth(2)
   val squareEmpty = Image.square(100).fillColor(Color.white)
@@ -179,7 +180,8 @@ object PuzzleState {
     * Find a sequence of legal moves of the frogs and toads puzzle from a specified starting
     * [[PuzzleState]] to the terminal [[PuzzleState]].
     *
-    * @param start the starting [[PuzzleState]]
+    * @param start the sequence of [[PuzzleState]] with the states leading to the solution
+    * @param pref Defaults to true, if false, gives prefference to the toads.
     * @return the sequence of [[PuzzleState]] objects passed through in the transit from
     * state `start` to the terminal state (inclusive). Returns the empty sequence if no solution
     * is found.
@@ -227,7 +229,7 @@ object PuzzleState {
     * the [[PuzzleState]] which is then put in the Sequence to animate
     *
     * @param count size of [[PuzzleState]]
-    * @param board the current [[PuzzleState]]
+    * @param state the current [[PuzzleState]]
     * @return the [[Image]] object that represent the current [[PuzzleState]]
     */
   def builder(count: Int, state: PuzzleState): Image = {
