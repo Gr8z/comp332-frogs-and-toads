@@ -151,9 +151,9 @@ object PuzzleState {
     * Doodle elements for the Puzzle states, each is mapped with a
     * cell in the puzzle.
     */
-  val squareFrog = Image.square(100).fillColor(Color.green).strokeWidth(2)
-  val squareToad = Image.square(100).fillColor(Color.brown).strokeWidth(2)
-  val squareEmpty = Image.square(100).fillColor(Color.white)
+  val squareFrog = Image.square(50).fillColor(Color.green).strokeWidth(2)
+  val squareToad = Image.square(50).fillColor(Color.brown).strokeWidth(2)
+  val squareEmpty = Image.square(50).fillColor(Color.white)
 
   /**
     * Construct a [[PuzzleState]] object in the initial state for a
