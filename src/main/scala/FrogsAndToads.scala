@@ -37,9 +37,11 @@ class PuzzleState private (board: Vector[PuzzleState.Cell], loc: Int) {
     board.slice(emptyLoc + 1, size).forall(_ == Toad)
   }
 
+  // FIXME you might want to add more methods here.
+
   def isToadsTurn(): Boolean = {
     (checkState(emptyLoc - 1, Frog) ||
-    emptyLoc < 0) &&
+    emptyLoc <= 0) &&
     checkState(emptyLoc, Empty) &&
     checkState(emptyLoc + 1, Frog) &&
     checkState(emptyLoc + 2, Toad)
@@ -50,7 +52,7 @@ class PuzzleState private (board: Vector[PuzzleState.Cell], loc: Int) {
     checkState(emptyLoc - 1, Toad) &&
     checkState(emptyLoc, Empty) &&
     (checkState(emptyLoc + 1, Toad) ||
-    emptyLoc >= size)
+    size - 1 <= emptyLoc)
   }
 
   def getBoard(): Vector[PuzzleState.Cell] = {
@@ -187,6 +189,7 @@ object PuzzleState {
     * Returns the empty sequence if no solution is found.
     */
   def solve(start: Seq[PuzzleState], pref: Boolean = true): Seq[PuzzleState] = {
+    // FIXME add your frogs and toads solver code here.
     if (start.last.isTerminalState()) {
       println("Found solution")
       return start
@@ -217,11 +220,37 @@ object PuzzleState {
     * passed through in the transit from the `start` state to the terminal state.
     */
   def animate(start: PuzzleState): Seq[Image] = {
+    // FIXME add your code here to generate the animation frame sequence.
     val states = solve(Seq(start))
 
     states.map { state =>
       builder(state.size - 1, state)
     }
+  }
+
+  /**
+    * Create an animation of a solution to the frogs and toads puzzle,
+    * starting from the initial [[PuzzleState]] and ending at the
+    * terminal [[PuzzleState]].
+    *
+    * @param frogs the number of frogs in the puzzle (between 1 and 10 inclusive)
+    * @param toads the number of toads in the puzzle (between 1 and 10 inclusive)
+    */
+  def animate(frogs: Int, toads: Int): Seq[Image] = {
+    animate(PuzzleState(frogs, toads))
+  }
+
+  //FIXME You might want to add some (private) auxiliary functions here.
+
+  /**
+    * [[createState]] is used to generate a custom puzzle state for
+    * testing custom senarios
+    *
+    * @param vector composed of Frogs, Toads, or Empty
+    * @return the [[PuzzleState]] of the vector to perform tests on
+    */
+  def createState(vector: Vector[PuzzleState.Cell]): PuzzleState = {
+    new PuzzleState(vector, vector.indexOf(Empty))
   }
 
   /**
@@ -243,15 +272,4 @@ object PuzzleState {
       case Empty => builder(count - 1, state).beside(squareEmpty)
     }
   }
-
-  /**
-    * Create an animation of a solution to the frogs and toads puzzle,
-    * starting from the initial [[PuzzleState]] and ending at the
-    * terminal [[PuzzleState]].
-    *
-    * @param frogs the number of frogs in the puzzle (between 1 and 10 inclusive)
-    * @param toads the number of toads in the puzzle (between 1 and 10 inclusive)
-    */
-  def animate(frogs: Int, toads: Int): Seq[Image] =
-    animate(PuzzleState(frogs, toads))
 }

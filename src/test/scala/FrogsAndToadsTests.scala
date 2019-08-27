@@ -45,6 +45,12 @@ class FrogsAndToadsTests extends FlatSpec with Matchers {
     assert(!PuzzleState(5, 8).isTerminalState())
   }
 
+  // FIXME Add more tests here.
+
+  it should "resolve to a terminal state when solved" in {
+    assert(solve(Seq(PuzzleState(5, 8))).last.isTerminalState())
+  }
+
   "A puzzle state:" should "produce Exception when invoked with 11 frogs" in {
     intercept[Exception] {
       PuzzleState(11, 8)
@@ -67,6 +73,26 @@ class FrogsAndToadsTests extends FlatSpec with Matchers {
     intercept[Exception] {
       PuzzleState(8, 0)
     }
+  }
+
+  "The Frogs:" should
+    "stop moving if (Toad, Frog, Empty, Frog, Toad)" in {
+    assert(createState(Vector(Toad, Frog, Empty, Frog, Toad)).isToadsTurn())
+  }
+
+  it should
+    "stop moving if (Empty, Frog, Toad, Frog, Toad)" in {
+    assert(createState(Vector(Empty, Frog, Toad, Frog, Toad)).isToadsTurn())
+  }
+
+  "The Toads:" should
+    "stop moving if (Frog, Toad, Empty, Toad, Frog)" in {
+    assert(createState(Vector(Frog, Toad, Empty, Toad, Frog)).isFrogsTurn())
+  }
+
+  it should
+    "stop moving if (Frog, Toad, Frog, Toad, Empty)" in {
+    assert(createState(Vector(Frog, Toad, Frog, Toad, Empty)).isFrogsTurn())
   }
 
 }
