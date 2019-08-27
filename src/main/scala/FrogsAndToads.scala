@@ -78,21 +78,21 @@ class PuzzleState private (board: Vector[PuzzleState.Cell], loc: Int) {
     if (checkState(loc + 1, Frog) && checkState(loc + 2, Toad)) {
       val newState = new PuzzleState(
         board
-          .take(loc)
-          .++(Vector(Toad))
-          .++(Vector(Frog))
-          .++(Vector(Empty))
-          .++(board.takeRight(size - loc - 3)),
+          .take(loc) ++
+          Vector(Toad) ++
+          Vector(Frog) ++
+          Vector(Empty) ++
+          board.takeRight(size - loc - 3),
         loc + 2
       )
       Some(newState)
     } else if (checkState(loc + 1, Toad)) {
       val newState = new PuzzleState(
         board
-          .take(loc)
-          .++(Vector(Toad))
-          .++(Vector(Empty))
-          .++(board.takeRight(size - loc - 2)),
+          .take(loc) ++
+          Vector(Toad) ++
+          Vector(Empty) ++
+          board.takeRight(size - loc - 2),
         loc + 1
       )
       Some(newState)
@@ -108,24 +108,23 @@ class PuzzleState private (board: Vector[PuzzleState.Cell], loc: Int) {
     if (checkState(loc - 1, Toad) && checkState(loc - 2, Frog)) {
       val newState = new PuzzleState(
         board
-          .take(loc - 2)
-          .++(Vector(Empty))
-          .++(Vector(Toad))
-          .++(Vector(Frog))
-          .++(board.takeRight(size - loc - 1)),
+          .take(loc - 2) ++
+          Vector(Empty) ++
+          Vector(Toad) ++
+          Vector(Frog) ++
+          board.takeRight(size - loc - 1),
         loc - 2
       )
       Some(newState)
     } else if (checkState(loc - 1, Frog)) {
       val newState = new PuzzleState(
         board
-          .take(loc - 1)
-          .++(Vector(Empty))
-          .++(Vector(Frog))
-          .++(board.takeRight(size - loc - 1)),
+          .take(loc - 1) ++
+          Vector(Empty) ++
+          Vector(Frog) ++
+          board.takeRight(size - loc - 1),
         loc - 1
       )
-      //println("slideFrog")
       Some(newState)
     } else {
       None
